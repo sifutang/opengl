@@ -28,7 +28,8 @@ class Render(context: Context) : GLSurfaceView.Renderer {
         private val VERTEXT = floatArrayOf(
             -0.5f, -0.5f, 0.0f, 1.0f,
              0.5f, -0.5f, 1.0f, 1.0f,
-             0.0f,  0.5f, 0.5f, 0.0f
+            -0.5f,  0.5f, 0.0f, 0.0f,
+             0.5f,  0.5f, 1.0f, 0.0f
         )
     }
 
@@ -95,7 +96,7 @@ class Render(context: Context) : GLSurfaceView.Renderer {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId)
         GLES20.glUniform1i(mUTextureLoc, 0)
 
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 6)
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
         GLES20.glDisableVertexAttribArray(mAPositionLoc)
         GLES20.glDisableVertexAttribArray(mATextureCoord)
     }
