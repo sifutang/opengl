@@ -60,7 +60,14 @@ class Render(context: Context) : GLSurfaceView.Renderer {
     private var mUModelMatrixLoc = -1
 
     override fun onDrawFrame(gl: GL10?) {
+        // 默认逆时针为正面
+        GLES20.glFrontFace(GLES20.GL_CCW)
+        // 打开背面裁剪功能
+        GLES20.glEnable(GLES20.GL_CULL_FACE)
+        // 清除颜色和深度缓冲
+        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT)
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
+
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f)
 
         GLES20.glUseProgram(mProgram)
