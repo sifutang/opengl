@@ -120,7 +120,7 @@ class Render(context: Context) : GLSurfaceView.Renderer {
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         Log.d(TAG, "onSurfaceCreated: ")
         mProgram = ShaderHelper.buildProgram(
-            TextResourceReader.readTextFileFromResource(mContext!!, R.raw.vertext),
+            TextResourceReader.readTextFileFromResource(mContext!!, R.raw.vertex),
             TextResourceReader.readTextFileFromResource(mContext!!, R.raw.fragment)
         )
         mAPositionLoc = GLES20.glGetAttribLocation(mProgram, A_POSITION)
