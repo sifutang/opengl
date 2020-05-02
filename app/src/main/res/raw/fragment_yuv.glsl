@@ -9,14 +9,8 @@ uniform sampler2D uvTexture;
 
 uniform int type;
 
-const mat3 yuv2rgb = mat3(
-1, 0, 1.2802,
-1, -0.214821, -0.380589,
-1, 2.127982, 0
-);
-
 void main() {
-    float y, u, v;
+    float y, u, v, r, g, b;
     // We had put the Y values of each pixel to the R, G, B components by GL_LUMINANCE,
     //that's why we're pulling it from the R component, we could also use G or B
     y = texture2D(yTexture, vTexCoord).r;
@@ -32,12 +26,14 @@ void main() {
         v = texture2D(vTexture, vTexCoord).r;
     }
 
-    y = 1.1643 * (y - 16.0 / 255.0);
+    // yuv to rgb
+    y = 1.164 * (y - 16.0 / 255.0);
     u = u - 128.0 / 255.0;
     v = v - 128.0 / 255.0;
 
-    // yuv to rgb
-    vec3 rgb = vec3(y, u, v) * yuv2rgb;
+    r = y + 1.596 * v;
+    g = y - 0.391 * u - 0.813 * v;
+    b = y + 2.018 * u;
 
-    gl_FragColor = vec4(rgb, 1.0);
+    gl_FragColor = vec4(r, g, b, 1.0);
 }

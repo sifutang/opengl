@@ -19,7 +19,7 @@ class YUVRender(context: Context) : GLSurfaceView.Renderer {
     companion object {
         private const val TAG = "YUVRender"
         // 0 -> i420, 1 -> nv21
-        private const val YUV_TYPE = 0
+        private const val YUV_TYPE = 1
         private val VERTEXT = floatArrayOf(
             -1f, -1f, 0.0f, 1.0f,
              1f, -1f, 1.0f, 1.0f,
