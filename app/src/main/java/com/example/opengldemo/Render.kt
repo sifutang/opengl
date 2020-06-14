@@ -25,7 +25,7 @@ class Render(context: Context) : GLSurfaceView.Renderer {
         private const val U_MODEL_MATRIX = "uModelMatrix"
         private const val U_TEXTURE = "uTexture2D"
 
-        private val VERTEXT = floatArrayOf(
+        private val VERTEX = floatArrayOf(
             -0.5f, -0.5f, 0.0f, 1.0f,
              0.5f, -0.5f, 1.0f, 1.0f,
             -0.5f,  0.5f, 0.0f, 0.0f,
@@ -36,34 +36,19 @@ class Render(context: Context) : GLSurfaceView.Renderer {
     private var mContext: Context? = context
     private var mFloatBuffer: FloatBuffer? = null
 
-    private var mModelMatrix = floatArrayOf(
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F
-    )
-    private var mViewMatrix = floatArrayOf(
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F
-    )
-    private var mProjectMatrix = floatArrayOf(
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F,
-        0F, 0F, 0F, 0F
-    )
+    private var mModelMatrix = FloatArray(16)
+    private var mViewMatrix = FloatArray(16)
+    private var mProjectMatrix = FloatArray(16)
 
     private var mProgram = -1
     private var mTextureId = -1
 
-    private var mAPositionLoc = -1
-    private var mATextureCoord = -1;
-    private var mUProjectMatrixLoc = -1
-    private var mUViewMatrixLoc = -1
-    private var mUModelMatrixLoc = -1
-    private var mUTextureLoc = -1
+    private var mPositionLoc = -1
+    private var mTextureCoord = -1;
+    private var mProjectMatrixLoc = -1
+    private var mViewMatrixLoc = -1
+    private var mModelMatrixLoc = -1
+    private var mTextureLoc = -1
 
     override fun onDrawFrame(gl: GL10?) {
         // 默认逆时针为正面
@@ -77,28 +62,28 @@ class Render(context: Context) : GLSurfaceView.Renderer {
 
         GLES20.glUseProgram(mProgram)
         mFloatBuffer!!.position(0)
-        GLES20.glEnableVertexAttribArray(mAPositionLoc)
+        GLES20.glEnableVertexAttribArray(mPositionLoc)
         GLES20.glVertexAttribPointer(
-            mAPositionLoc, 2, GLES20.GL_FLOAT, false, 16, mFloatBuffer
+            mPositionLoc, 2, GLES20.GL_FLOAT, false, 16, mFloatBuffer
         )
 
         mFloatBuffer!!.position(2)
-        GLES20.glEnableVertexAttribArray(mATextureCoord)
+        GLES20.glEnableVertexAttribArray(mTextureCoord)
         GLES20.glVertexAttribPointer(
-            mATextureCoord, 2, GLES20.GL_FLOAT, false, 16, mFloatBuffer
+            mTextureCoord, 2, GLES20.GL_FLOAT, false, 16, mFloatBuffer
         )
 
-        GLES20.glUniformMatrix4fv(mUProjectMatrixLoc, 1, false,  mProjectMatrix, 0)
-        GLES20.glUniformMatrix4fv(mUViewMatrixLoc, 1, false, mViewMatrix, 0)
-        GLES20.glUniformMatrix4fv(mUModelMatrixLoc, 1, false, mModelMatrix, 0)
+        GLES20.glUniformMatrix4fv(mProjectMatrixLoc, 1, false,  mProjectMatrix, 0)
+        GLES20.glUniformMatrix4fv(mViewMatrixLoc, 1, false, mViewMatrix, 0)
+        GLES20.glUniformMatrix4fv(mModelMatrixLoc, 1, false, mModelMatrix, 0)
 
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureId)
-        GLES20.glUniform1i(mUTextureLoc, 0)
+        GLES20.glUniform1i(mTextureLoc, 0)
 
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4)
-        GLES20.glDisableVertexAttribArray(mAPositionLoc)
-        GLES20.glDisableVertexAttribArray(mATextureCoord)
+        GLES20.glDisableVertexAttribArray(mPositionLoc)
+        GLES20.glDisableVertexAttribArray(mTextureCoord)
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
@@ -123,18 +108,18 @@ class Render(context: Context) : GLSurfaceView.Renderer {
             TextResourceReader.readTextFileFromResource(mContext!!, R.raw.vertex),
             TextResourceReader.readTextFileFromResource(mContext!!, R.raw.fragment)
         )
-        mAPositionLoc = GLES20.glGetAttribLocation(mProgram, A_POSITION)
-        mATextureCoord = GLES20.glGetAttribLocation(mProgram, A_TEXTURE_COORD)
-        mUProjectMatrixLoc = GLES20.glGetUniformLocation(mProgram, U_PROJECT_MATRIX)
-        mUViewMatrixLoc = GLES20.glGetUniformLocation(mProgram, U_VIEW_MATRIX)
-        mUModelMatrixLoc = GLES20.glGetUniformLocation(mProgram, U_MODEL_MATRIX)
-        mUTextureLoc = GLES20.glGetUniformLocation(mProgram, U_TEXTURE)
+        mPositionLoc = GLES20.glGetAttribLocation(mProgram, A_POSITION)
+        mTextureCoord = GLES20.glGetAttribLocation(mProgram, A_TEXTURE_COORD)
+        mProjectMatrixLoc = GLES20.glGetUniformLocation(mProgram, U_PROJECT_MATRIX)
+        mViewMatrixLoc = GLES20.glGetUniformLocation(mProgram, U_VIEW_MATRIX)
+        mModelMatrixLoc = GLES20.glGetUniformLocation(mProgram, U_MODEL_MATRIX)
+        mTextureLoc = GLES20.glGetUniformLocation(mProgram, U_TEXTURE)
 
         mFloatBuffer = ByteBuffer
-            .allocateDirect(VERTEXT.size * 4)
+            .allocateDirect(VERTEX.size * 4)
             .order(ByteOrder.nativeOrder())
             .asFloatBuffer()
-        mFloatBuffer?.put(VERTEXT)
+        mFloatBuffer?.put(VERTEX)
 
         mTextureId = TextureHelper.loadTexture(mContext!!, R.drawable.ic_launcher)
     }
